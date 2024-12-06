@@ -208,8 +208,9 @@ h2 {
     {% endif %}
     
     <form action="/check_user" method="post">
-        <input type="text" name="uid" id="uid" class="input-field" placeholder="Username" required>
+        <input type="text" name="uid" id="uid" class="input-field" placeholder="Username1" required>
         <input type="password" name="pwd" id="pwd" class="input-field" placeholder="Password" required>
+      <input type="hidden" name="utype" value="{{ utype }}">
         <button type="submit" class="btn">Login</button>
     </form>
 </div>

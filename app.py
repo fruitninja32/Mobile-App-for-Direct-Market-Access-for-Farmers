@@ -2,7 +2,7 @@ from os import pathconf_names
 from flask import Flask, request, render_template, redirect, url_for, session
 from database import engine
 from sqlalchemy.sql import text
-from database import add_product_to_db, add_orders_to_db, accept_order, update, cancel_order, delivered_order,add_user_to_db
+from database import add_product_to_db, add_orders_to_db, accept_order, update, cancel_order, delivered_order, add_user_to_db
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -16,11 +16,15 @@ def load_products_from_db():
             products.append(row._asdict())
         return products
 
+
 def load_rating(pid):
     with engine.connect() as conn:
-        result = conn.execute(text("SELECT AVG(rating) FROM orders WHERE pid = :pid"), {"pid": pid})
+        result = conn.execute(
+            text("SELECT AVG(rating) FROM orders WHERE pid = :pid"),
+            {"pid": pid})
         avg_rating = result.scalar()
         return int(avg_rating) if avg_rating is not None else 0
+
 
 def load_fproducts_from_db(uid):
     with engine.connect() as conn:
@@ -51,6 +55,8 @@ def load_users_from_db():
         for row in result:
             users.append(row._asdict())
         return users
+
+
 def load_admins_from_db():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT * FROM AdminT"))
@@ -326,6 +332,7 @@ def about():
 def SingUp():
     return render_template('SingUp.html')
 
+
 @app.route("/register")
 def register():
     data = request.form
@@ -336,7 +343,7 @@ def register():
 @app.route("/log")
 def log():
     utype = request.args.get('utype')
-    return render_template('log.html',utype=utype)
+    return render_template('log.html', utype=utype)
 
 
 @app.route("/service")
@@ -391,7 +398,7 @@ def view2():
     oid = request.form.get('oid')
     temp = request.form.get('temp')
     pid = request.form.get('pid')
-    rating=load_rating(pid)
+    rating = load_rating(pid)
 
     if not oid or not oid.isdigit():
         return "Invalid or missing order ID", 400
@@ -423,7 +430,8 @@ def view2():
         return render_template('view2.html',
                                order=order,
                                utype=utype,
-                               temp=temp,rating=rating)
+                               temp=temp,
+                               rating=rating)
     else:
         return "Order not found", 404
 
@@ -587,13 +595,24 @@ def dashboard():
 def check_user():
     username = request.form.get("uid")
     password = request.form.get("pwd")
-    utype = request.form.get('utype')
-    users = load_users_from_db()  
+    utype = request.form.get("utype")
+    users = load_users_from_db()
     admins = load_admins_from_db()
-    if(utype==3):
+    if utype == '3':
         user = next((u for u in admins if u["uname"] == username), None)
         if user:
-            if user["pwd"] == password:  
+            if user["pwd"] == password:
+                session["username"] = username
+                session["uid"] = user['uid']
+                return redirect(url_for("products"))
+            else:
+                error = "Incorrect password!"
+        else:
+            error = "User does not exist!"
+    else:
+        user = next((u for u in users if u["uname"] == username), None)
+        if user:
+            if user["pwd"] == password:
                 session["username"] = username
                 session["utype"] = user["utype"]
                 session["uid"] = user['uid']
@@ -604,22 +623,6 @@ def check_user():
             error = "User does not exist!"
 
         # Re-render the login page with the error message
-        return render_template("log.html", error=error)
-    # Find the user in the list
-    user = next((u for u in users if u["uname"] == username), None)
-
-    if user:
-        if user["pwd"] == password:  # Replace with password hash check in production
-            session["username"] = username
-            session["utype"] = user["utype"]
-            session["uid"] = user['uid']
-            return redirect(url_for("home"))
-        else:
-            error = "Incorrect password!"
-    else:
-        error = "User does not exist!"
-
-    # Re-render the login page with the error message
     return render_template("log.html", error=error)
 
 
