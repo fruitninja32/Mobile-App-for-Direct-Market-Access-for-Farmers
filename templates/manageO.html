@@ -113,7 +113,7 @@
     /* Buttons */
     .btn {
       padding: 0.8rem 1.5rem;
-      background-color: #4FFFB0;
+      background-color: #ff2c2c;
       color: white;
       border: none;
       border-radius: 5px;
@@ -121,7 +121,7 @@
       transition: background-color 0.3s;
     }
     .btn:hover {
-      background-color: #3ec99b;
+      background-color: #ffbfbf;
     }
   </style>
 </head>
@@ -136,13 +136,13 @@
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRYf8F22QlIDXQCPWgmW2KLZXxPhA9sIU9Yw&s" alt="Logo">
         </a>
         <ul class="nav__list" id="nav-menu">
-          <li><a href="#" class="nav__link active"><i class="ri-home-line"></i> Home</a></li>
-          <li><a href="/products" class="nav__link"><i class="ri-shopping-cart-line"></i> Products</a></li>
-          <li><a href="about" class="nav__link"><i class="ri-information-line"></i> About Us</a></li>
-          <li><a href="/service" class="nav__link"><i class="ri-service-line"></i> Services</a></li>
-          <li><a href="#" class="nav__link"><i class="ri-contacts-line"></i> Contact</a></li>
-          <li><a href="/dashboard" class="nav__link"><i class="ri-dashboard-line"></i> Dashboard</a></li>
-          <li><a href="/profile" class="nav__link"><i class="ri-user-line"></i></i> Profile</a></li>
+          <li><a href="/admin" class="nav__link"></i> Dashboard</a></li>
+          <li><a href="/ManageU" class="nav__link">Manage Users</a></li>
+          <li><a href="/ManageP" class="nav__link">Manage Products</a></li>
+          <li><a href="/ManageO" class="nav__link active">Manage Orders</a></li>
+          <li><a href="#" class="nav__link">Manage Application</a></li>
+
+
         </ul>
         <div class="nav__icons">
           {% if not logged_in %}
@@ -166,27 +166,30 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Farmer Name</th>
-            <th>Farmer ID</th>
-            <th>Product Name</th>
+            <th>Order Id</th>
+            <th>Farmer Id</th>
+            <th>Product Id</th>
+            <th>Buyer Id</th>
             <th>Quantity</th>
             <th>Price</th>
-            <th>Date</th>
-            <th>Remove Product</th>
+            <th>Status</th>
+            
+            <th>Remove</th>
           </tr>
         </thead>
         <tbody>
-          {% for product in Products %}
+          {% for order in orders %}
           <tr>
-            <td>{{ product['fname'] }}</td>
-            <td>{{ product['fid'] }}</td>
-            <td>{{ product['pname'] }}</td>
-            <td>{{ product['quantity'] }}</td>
-            <td>{{ product['price'] }}</td>
-            <td>{{ product['dt'] }}</td>
-            <td>
+            <td>{{ order['oid'] }}</td>
+            <td>{{ order['fid'] }}</td>
+            <td>{{ order['pid'] }}</td>
+            <td>{{ order['bid'] }}</td>
+            <td>{{ order['quantity'] }}</td>
+            <td>{{ order['price'] }}</td>
+            <td>{{ order['status'] }}</td>
+            
               <!-- Add your desired button here -->
-              <button class="btn" onclick="handleAction('{{ product['fid'] }}')">remove</button>
+              <td><button class="btn" onclick="handleAction('{{ order['oid'] }}')">remove</button></td>
             </td>
           </tr>
           {% endfor %}

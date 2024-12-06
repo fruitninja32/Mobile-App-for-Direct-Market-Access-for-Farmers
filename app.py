@@ -77,7 +77,7 @@ def load_UserD_from_db():
 
 def load_OrdersD_from_db():
     with engine.connect() as conn:
-        result = conn.execute(text("SELECT * FROM UserD"))
+        result = conn.execute(text("SELECT * FROM orders"))
         users = []
         for row in result:
             users.append(row._asdict())
@@ -311,6 +311,13 @@ def load_delivered_from_db(uid):
         return delivered
 
 
+@app.route("/ManageO")
+def ManageO():
+    logged_in = "username" in session
+    orders = load_OrdersD_from_db()
+    return render_template('manageO.html', orders=orders, logged_in=logged_in)
+
+
 @app.route("/ManageP")
 def ManageP():
     logged_in = "username" in session
@@ -332,15 +339,8 @@ def admin():
     uc = len(load_UserD_from_db())
     oc = len(load_OrdersD_from_db())
     pc = len(load_ProductsD_from_db())
-    users = load_UserD_from_db()
-    orders = load_OrdersD_from_db()
 
-    return render_template('admin.html',
-                           uc=uc,
-                           pc=pc,
-                           oc=oc,
-                           users=users,
-                           orders=orders)
+    return render_template('admin.html', uc=uc, pc=pc, oc=oc)
 
 
 @app.route("/")
