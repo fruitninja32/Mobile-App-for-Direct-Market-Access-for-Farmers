@@ -208,8 +208,10 @@
             <td>{{ user['hno'] }}</td>
            
             <td>
-              <!-- Add your desired button here -->
-              <button class="btn" onclick="handleAction('{{ user['uid'] }}')">remove</button>
+                <form action="/remove-user" method="POST" >
+                    <input type="hidden" name="order_id" value="{{ user['uid'] }}">
+                    <button type="submit" class="btn">Remove</button>
+                </form>
             </td>
           </tr>
           {% endfor %}

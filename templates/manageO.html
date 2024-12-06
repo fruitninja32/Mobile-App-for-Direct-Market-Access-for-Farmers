@@ -189,8 +189,13 @@
             <td>{{ order['status'] }}</td>
             
               <!-- Add your desired button here -->
-              <td><button class="btn" onclick="handleAction('{{ order['oid'] }}')">remove</button></td>
-            </td>
+              <td>
+                  <form action="/removeO" method="POST" >
+                      <input type="hidden" name="oid" value="{{ order['oid'] }}">
+                      <button type="submit" class="btn">Remove</button>
+                  </form>
+              </td>
+
           </tr>
           {% endfor %}
         </tbody>

@@ -2,7 +2,7 @@ from os import pathconf_names
 from flask import Flask, request, render_template, redirect, url_for, session
 from database import engine
 from sqlalchemy.sql import text
-from database import add_product_to_db, add_orders_to_db, accept_order, update, cancel_order, delivered_order, add_user_to_db
+from database import add_product_to_db, add_orders_to_db, accept_order, update, cancel_order, delivered_order, add_user_to_db, remove_Product
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -309,6 +309,19 @@ def load_delivered_from_db(uid):
         for row in result:
             delivered.append(row._asdict())
         return delivered
+
+
+@app.route("/removeP", methods=["POST"])
+def removeP():
+    pid = request.form.get('pid')
+    remove_Product(pid)
+    return redirect(url_for('ManageP'))
+
+@app.route("/removeO", methods=["POST"])
+def removeO():
+    oid = request.form.get('oid')
+    remove_order(oid)
+    return redirect(url_for('ManageO'))
 
 
 @app.route("/ManageO")

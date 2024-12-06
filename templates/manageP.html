@@ -185,8 +185,10 @@
             <td>{{ product['price'] }}</td>
             <td>{{ product['dt'] }}</td>
             <td>
-              <!-- Add your desired button here -->
-              <button class="btn" onclick="handleAction('{{ product['fid'] }}')">remove</button>
+                <form action="/removeP" method="POST" >
+                    <input type="hidden" name="pid" value="{{ product['pid'] }}">
+                    <button type="submit" class="btn">Remove</button>
+                </form>
             </td>
           </tr>
           {% endfor %}

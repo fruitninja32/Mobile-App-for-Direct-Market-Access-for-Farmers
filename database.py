@@ -5,6 +5,18 @@ engine = create_engine(
 )
 
 
+def remove_Product(pid):
+    with engine.connect() as conn:
+        result = conn.execute(text("DELETE FROM products WHERE pid = :pid"),
+                              {"pid": pid})
+        conn.commit()
+def remove_orders(pid):
+    with engine.connect() as conn:
+        result = conn.execute(text("DELETE FROM products WHERE pid = :pid"),
+                              {"pid": pid})
+        conn.commit()
+
+
 def accept_order(oid):
     with engine.connect() as conn:
         conn.execute(
