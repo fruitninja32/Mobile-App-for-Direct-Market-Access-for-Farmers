@@ -75,6 +75,24 @@ def load_UserD_from_db():
         return users
 
 
+def load_OrdersD_from_db():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM UserD"))
+        users = []
+        for row in result:
+            users.append(row._asdict())
+        return users
+
+
+def load_ProductsD_from_db():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM Products"))
+        users = []
+        for row in result:
+            users.append(row._asdict())
+        return users
+
+
 def load_full_order_details(uid):
     with engine.connect() as conn:
         result = conn.execute(
@@ -291,6 +309,38 @@ def load_delivered_from_db(uid):
         for row in result:
             delivered.append(row._asdict())
         return delivered
+
+
+@app.route("/ManageP")
+def ManageP():
+    logged_in = "username" in session
+    products = load_ProductsD_from_db()
+    return render_template('manageP.html',
+                           Products=products,
+                           logged_in=logged_in)
+
+
+@app.route("/ManageU")
+def ManageU():
+    logged_in = "username" in session
+    users = load_UserD_from_db()
+    return render_template('manageU.html', users=users, logged_in=logged_in)
+
+
+@app.route("/admin")
+def admin():
+    uc = len(load_UserD_from_db())
+    oc = len(load_OrdersD_from_db())
+    pc = len(load_ProductsD_from_db())
+    users = load_UserD_from_db()
+    orders = load_OrdersD_from_db()
+
+    return render_template('admin.html',
+                           uc=uc,
+                           pc=pc,
+                           oc=oc,
+                           users=users,
+                           orders=orders)
 
 
 @app.route("/")
@@ -604,7 +654,7 @@ def check_user():
             if user["pwd"] == password:
                 session["username"] = username
                 session["uid"] = user['uid']
-                return redirect(url_for("products"))
+                return redirect(url_for("admin"))
             else:
                 error = "Incorrect password!"
         else:
